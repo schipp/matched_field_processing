@@ -1,0 +1,259 @@
+# -- project identifier
+project_id: '171_redo_2019_02_medium_one_week_v3'
+
+# -- time windows
+#
+# start_time = '2019-09-25T00:00:00.0Z'
+# end_time = '2019-10-05T00:00:00.0Z'
+# start_time: '2019-09-28T10:00:00.0Z'
+# start_time: '2019-09-29T15:57:56.0Z'  # Chile // 35.47S, 72.91W, 26km, M6.8
+# start_time: '2019-09-29T12:00:00.0Z'
+# start_time: '2008-07-29T18:42:15.0Z'  # CHINO HILLS
+# start_time: '2019-09-29T02:02:52.9Z'  # Philippines // 5.72N, 126.58E, 89km, M6.2
+# start_time: '2019-09-25T23:46:43.8Z'  # Indonesia // 3.45S, 128.35E, 18km, M6.5
+# start_time: '2019-10-01T03:56:06.8Z'  # Southern East Pacific Rise // 55.99S, 122.54W, 10km, M5.9
+# start_time: '2019-10-01T19:57:11.7Z'  # MACQUARIE ISLAND REGION // 55.28S, 158.59E, 20km, M5.5
+# start_time: '2019-09-27T13:00:00.0Z'  # MACQUARIE ISLAND REGION // 55.28S, 158.59E, 20km, M5.5
+# start_time: '2019-09-24T01:00:00.0Z'  # north sea day
+# start_time: '2014-02-01T01:00:00.0Z'  # north sea day
+start_time: '2019-02-01T01:00:00.0Z'  # atlantic
+# start_time: '2019-02-06T14:00:00.0Z'  # atlantic
+# end_time: '2019-02-06T18:00:00.0Z'
+end_time: '2019-02-08T23:59:59.0Z'
+# end_time: '2019-02-01T23:59:59.0Z'
+# for now dictated by length of GFs in gf database
+window_length: 3880  # - for 5s db
+# window_length: 17953
+# for synth
+# window_length: 500
+# overlap: .70 # 20 min
+# overlap: .85 # 10 min
+overlap: .50 # 30 min
+use_external_timelist: false
+# external_timelist: 'timelist_chino.csv'
+# external_timelist: 'timelist_globals.csv'
+# external_timelist: 'timelist_nocal.csv'
+# external_timelist: 'timelist_chile.csv'
+external_timelist: './timelists/timelist_chino.csv'
+# external_timelist: './timelists/timelist_ridge_eq.csv'
+# external_timelist: './timelists/timelist_northsea_eq.csv'
+
+do_only_one_timewindow: false
+
+# -- grid geometry
+# type: 'cartesian' or 'geographic'
+# geometry_type: 'cartesian'
+geometry_type: 'geographic'
+# grid_spacing: .25  # synthetic
+# grid_spacing: .05  # north sea
+grid_spacing: .1  # north sea
+# grid_spacing: .01  # US west coast small
+# grid_spacing: .5  # atlantic
+# grid_spacing: .25
+# # US west coast
+# grid_limits_lon: [-132, -114]
+# grid_limits_lat: [29, 45]
+# ATLANTIC
+# grid_limits_lon: [-75, 0]
+# grid_limits_lat: [5, 65]
+# NORTH SEA
+# grid_limits_lon: [-16, 17]
+# grid_limits_lat: [42, 65]
+# NORTH SEA v2
+# grid_limits_lon: [-18, 19]
+# grid_limits_lat: [41, 66]
+# NORTH SEA v3
+grid_limits_lon: [-18, 20]
+grid_limits_lat: [40, 66]
+# small around CI (US west coast)
+# grid_limits_lon: [-121, -113]
+# grid_limits_lat: [32, 37]
+# small around 33.953,-117.761 for sdr grid search (US west coast)
+# grid_limits_lon: [-117.77, -117.75]
+# grid_limits_lat: [33.94, 33.96]
+# small around XC (US west coast)
+# grid_limits_lon: [-122, -114.47]
+# grid_limits_lat: [40.82, 45.82]
+# global
+# grid_limits_lon: [-180, 180]
+# grid_limits_lat: [-90, 90]
+# local synth
+# grid_limits_x: [-100, 100]
+# grid_limits_y: [-100, 100]
+do_depth: false
+depth_params: [15.5]
+
+n_processes: 50
+
+# -- frequencies
+# secondary
+# fmin: 0.1
+# fmax: 0.2
+# primary
+# fmin: 0.05
+# fmax: 0.1
+
+fmin: .3
+fmax: 5.5
+
+# filterpairs: [[0.1, 0.2]]
+# filterpairs: [[0.05, 0.1]]
+# filterpairs: [[0.25, 0.5]]
+# filterpairs: [[0.06, 0.08]]
+# filterpairs: [[0.13, 0.15]]
+# filterpairs: [[0.10, 0.11], [0.11, 0.12], [0.12, 0.13], [0.13, 0.14], [0.14, 0.15], [0.15, 0.16], [0.16, 0.17], [0.17, 0.18], [0.18, 0.19], [0.19, 0.20]]
+# filterpairs: [[0.13, 0.15], [0.1, 0.2], [0.2, 0.3], [0.3, 0.4]]
+# filterpairs: [[0.13, 0.15], "None"]
+# filterpairs: ["None"]
+# filterpairs: [[0.01, 100]]
+# filterpairs: [[0.1, 0.5], [0.25, 0.5], "None"]
+# filterpairs: ["None"]
+filterpairs: [[0.13, 0.15]]
+# filterpairs: [[0.1, 0.5]]
+# filterpairs: [[0.3, 5.5]]
+
+# -- data
+# data_fn: ['../data/deconv/old/LHZ_new.mseed']
+# data_fn: ['../data/deconv/atlantic_2020_01_01/2020_01_01_10km.mseed']
+# data_fn: ['../data/deconv/atlantic_ridge_1/2019-02-14.mseed']
+# data_fn: ['../data/deconv/atlantic_ridge_1/2019-02-14_outliers.mseed']
+# data_fn: ['../data/deconv/atlantic_eq_larger/all_outlier.mseed']
+# data_fn: ['../data/deconv/atlantic_eq_larger/left.mseed']
+# data_fn: ['../data/deconv/atlantic_eq_larger/left_outlier.mseed']
+# data_fn: ['../data/deconv/atlantic_eq_larger/right.mseed']
+# data_fn: ['../data/deconv/northsea_eq/all_outlier.mseed']
+# data_fn: ['../data/deconv/northsea_2014_02/*.mseed']
+data_fn: ['../data/deconv/northsea_2019_02/*.mseed']
+# data_fn: ['../data/deconv/atlantic_ridge_1/2019-02-14_lim5_outliers.mseed']
+# data_fn: ['../data/deconv/atlantic_ridge_1/2019-02-14_arrays.mseed']
+# data_fn: ['../data/deconv/atlantic_ridge_1/2019-02-14_norsar_only.mseed']
+# data_fn: ['../data/deconv/atlantic_ridge_1/2019-02-14_cn.mseed']
+# data_fn: ['../data/deconv/XC/LHZ_chino.mseed']
+# data_fn: ['../data/deconv/CI/LHZ_chino.mseed']
+# data_fn: '../data/deconv/global/LHZ_sanitized.mseed'
+# data_fn: ['../data/deconv/global/LHZ_all.mseed']
+# data_fn: ['../data/deconv/CI/NoCal_2014-08-24.mseed', '../data/deconv/TA/NoCal_2014-08-24.mseed']
+# data_fn: ['/data/cen/u254/Data/Italy_arraydata/130301*BHZ.mseed', '/data/cen/u254/Data/Nice_arraydata/NICE/130301*HZ.mseed', '/data/cen/u254/MMarray_data/010313*HHZ.mseed']
+# data_fn: ['../data/deconv/TA/LHZ_PHNX.mseed', '../data/deconv/TA/TA_LHZ_chino_hills.mseed']
+# data_fn: ['../data/deconv/TA/NoCal_2014-08-24.mseed']
+# data_fn: ['../data/deconv/CI/NoCal_2014-08-24.mseed']
+sta_xml_dir: '../data/stations/'
+sampling_rate: 1
+# valid: Z, R, T
+components: ['Z']
+wavetypes: ['Z']
+
+do_quality_check: true
+amp_thresholds: [0.0001, 0.05]
+std_thresholds: [0.000001, 0.0001]
+
+# -- synthetics
+do_synth: false
+# percentage of max amplitude of noise level
+add_noise_to_synth: 0
+# how often repeat
+add_noise_iterations: 1
+
+synth_sources: [[0, 0]]
+# synthetically place stations or use real locations (from metadata)
+use_synth_stations: false
+# 'grid' or 'uniform' or 'file' or 'partial_circle'
+synth_stations_mode: 'file'
+
+# 
+synth_stations_circle_n: 20
+synth_stations_circle_max: 20
+synth_stations_circle_radius: 1
+
+# if mode is 'file', which file to use
+synth_stations_file: './synth/synth_two_arrays_100km.csv'
+# if mode is 'grid' or 'uniform'
+# will pick nearest evenly square-rootable number
+synth_stations_n: 400
+
+# alternatively, use locations of all open stations via 'ORFEUS'
+use_open_worldwide_stations: false
+
+# -- computational efficiency
+# decimals to round distances to
+# 0 = km-accuracy
+# -1: 10kms
+# -2: 100kms...
+decimal_round: 0
+
+# -- instaseis gf_db
+# used for gridpoint-gfs & synthetic data
+# longer 17953s
+# gf_db_dir: '../../gf_dbs/prem_a_10s'
+# shorter 3880s
+gf_db_dir: '../../gf_dbs/prem_a_5s'
+
+# -- gf
+# directly use green's functions extracted from instaseis_db
+# type_of_gf: 'GF'
+# measure traveltime from green's functions extracted from instaseis_db
+# and use phase-only spectrum of shape: e^(-iωt)
+# type_of_gf: 'measure_from_GF'
+# estimate traveltime using constant velocity v_const and greatcircle propagation
+# and use phase-only spectrum of shape: e^(-iωt)
+type_of_gf: 'v_const'
+v_const: 3.0
+# Rough average estimate for 8s Lu et al. 2018
+# v_const: 2.6
+
+exclude_land: true
+
+# amplitude treatment
+# available modes:
+# "timedomain": time-domain normalisation
+# "whitening_GF": frequency-domain normalisation
+# "phase-correlation": phase-correlation
+# "spreading_attenuation": compute and apply spreading + attenuation terms, set parameters ampl_spreading_wavetype and ampl_quality_factor
+amplitude_treatment: "whitening_GF"
+# norm_mode_gf: 'time_domain'
+norm_mode_gf: 'whitening'
+normalize_gf: true
+norm_mode_data: 'whitening'
+normalize_data: false
+
+ampl_spreading_wavetype: "surface"
+ampl_quality_factor: 5000
+
+# fit measure
+# 'wasserstein', 'bartlett', 'l2'
+measure: 'bartlett'
+
+# transform traces into envelopes for matching
+do_energy: false
+
+# Moment Tensor of source used for GF
+# functionality for strike/dip/rake grid search
+strike_dip_rake_gridsearch: false
+strike_spacing: 10
+dip_spacing: 10
+rake_spacing: 10
+# Mxx, Myy, Mzz, Mxy, Mxz, Myz
+MT: [1, 1, 1, 0, 0, 0]  # explosion
+# https://web.archive.org/web/20090512092723/http://www.data.scec.org/mtarchive/solution.jsp?eventid=14383980
+# MT: [-1450, 602, 844, 495, -198, -689]  # CHINO HILLS DEVIATORIC
+
+# max distance in km at which gfs are taken into account for each grid point
+use_max_dist: false
+min_dist: 1000
+max_dist: 20000
+
+# plotting
+do_plot: true
+plot_antipode: false
+
+# iteration
+do_iteration: false
+iteration_type: "monte_carlo"
+
+# SVD
+# if n_svd_components > 0, SVD will be done and all components lower than n_svd_components will be excluded
+do_svd: false
+n_svd_components: [0, 5, 10, 25, 50, 100]
+
+#
+do_coherency_weighting: false
