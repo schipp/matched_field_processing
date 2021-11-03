@@ -1,259 +1,250 @@
-# -- project identifier
-project_id: '171_redo_2019_02_medium_one_week_v3'
+# 1 -- GLOBAL SETTINGS
 
-# -- time windows
-#
-# start_time = '2019-09-25T00:00:00.0Z'
-# end_time = '2019-10-05T00:00:00.0Z'
-# start_time: '2019-09-28T10:00:00.0Z'
-# start_time: '2019-09-29T15:57:56.0Z'  # Chile // 35.47S, 72.91W, 26km, M6.8
-# start_time: '2019-09-29T12:00:00.0Z'
-# start_time: '2008-07-29T18:42:15.0Z'  # CHINO HILLS
-# start_time: '2019-09-29T02:02:52.9Z'  # Philippines // 5.72N, 126.58E, 89km, M6.2
-# start_time: '2019-09-25T23:46:43.8Z'  # Indonesia // 3.45S, 128.35E, 18km, M6.5
-# start_time: '2019-10-01T03:56:06.8Z'  # Southern East Pacific Rise // 55.99S, 122.54W, 10km, M5.9
-# start_time: '2019-10-01T19:57:11.7Z'  # MACQUARIE ISLAND REGION // 55.28S, 158.59E, 20km, M5.5
-# start_time: '2019-09-27T13:00:00.0Z'  # MACQUARIE ISLAND REGION // 55.28S, 158.59E, 20km, M5.5
-# start_time: '2019-09-24T01:00:00.0Z'  # north sea day
-# start_time: '2014-02-01T01:00:00.0Z'  # north sea day
-start_time: '2019-02-01T01:00:00.0Z'  # atlantic
-# start_time: '2019-02-06T14:00:00.0Z'  # atlantic
-# end_time: '2019-02-06T18:00:00.0Z'
-end_time: '2019-02-08T23:59:59.0Z'
-# end_time: '2019-02-01T23:59:59.0Z'
-# for now dictated by length of GFs in gf database
-window_length: 3880  # - for 5s db
+# base directory to save results in
+project_basedir: "/data/cen/u254/sven/global_mfp/projects/"
+
+# a subfolder is created for project_id to differentiate runs with varying settings.yml
+project_id: '173_redevelop_synth_test_larger_array_GF_densergrid'
+
+# 2 -- TIME
+
+# window length used in analysis in seconds
+# IMPORTANT: for now dictated by length of GFs in gf database
+# e.g., 3880s for aniso PREM 5s database from syngine
+window_length: 3880
 # window_length: 17953
-# for synth
-# window_length: 500
-# overlap: .70 # 20 min
-# overlap: .85 # 10 min
-overlap: .50 # 30 min
-use_external_timelist: false
-# external_timelist: 'timelist_chino.csv'
-# external_timelist: 'timelist_globals.csv'
-# external_timelist: 'timelist_nocal.csv'
-# external_timelist: 'timelist_chile.csv'
-external_timelist: './timelists/timelist_chino.csv'
-# external_timelist: './timelists/timelist_ridge_eq.csv'
-# external_timelist: './timelists/timelist_northsea_eq.csv'
 
-do_only_one_timewindow: false
+# Mode of windows' start time determination: 
+# - "file": extract start times from time external_timelist
+# - "overlapping_windows": define windows in given range (see below)
+time_window_mode: "overlapping_windows"
 
-# -- grid geometry
-# type: 'cartesian' or 'geographic'
-# geometry_type: 'cartesian'
-geometry_type: 'geographic'
-# grid_spacing: .25  # synthetic
-# grid_spacing: .05  # north sea
-grid_spacing: .1  # north sea
-# grid_spacing: .01  # US west coast small
-# grid_spacing: .5  # atlantic
-# grid_spacing: .25
-# # US west coast
-# grid_limits_lon: [-132, -114]
-# grid_limits_lat: [29, 45]
-# ATLANTIC
-# grid_limits_lon: [-75, 0]
-# grid_limits_lat: [5, 65]
-# NORTH SEA
-# grid_limits_lon: [-16, 17]
-# grid_limits_lat: [42, 65]
-# NORTH SEA v2
-# grid_limits_lon: [-18, 19]
-# grid_limits_lat: [41, 66]
-# NORTH SEA v3
-grid_limits_lon: [-18, 20]
-grid_limits_lat: [40, 66]
-# small around CI (US west coast)
+# if time_window_mode == "overlapping_windows":
+
+# Start of first time window, given as obspy.UTCDateTime-readable string.
+start_time: "2019-02-01T01:00:00.0Z"
+
+# Last time windows ends no later than, given as obspy.UTCDateTime-readable string.
+end_time: "2019-02-08T23:59:59.0Z"
+
+# Overlap windows by how much in given time frame.
+# Given as a ratio. allowed overlaps: 0 =< overlap < 1.
+overlap: 0.5
+
+# if time_window_mode == "file" (see above) use this file
+external_timelist: "/data/cen/u254/sven/global_mfp/code/timelists/timelist_chino.csv"
+
+# for debugging purposes or synthetic runs, it can be useful to run only a single time window
+# TODO: handle this more elegantly in code, especially for synthetic tests.
+do_only_one_timewindow: true
+
+# 3 -- GEOMETRY
+
+# Type of coordinate system used:
+# - "cartesian", when using local coordinates (or UTM) and distances are in meters
+# - "geographic", when using georeferenced data and distances are in degrees
+geometry_type: "cartesian"
+
+# Longitude/X and Latitude/Y limits of the grid.
+# if geometry_type is "cartesian", limits must be given as grid_limits_x, grid_limits_y
+# if geometry_type is "geographic", limits must be given as grid_limits_lon, grid_limits_lat
+# # north sea
+# grid_limits_lon: [-18, 20]
+# grid_limits_lat: [40, 66]
+# # small around CI
 # grid_limits_lon: [-121, -113]
 # grid_limits_lat: [32, 37]
-# small around 33.953,-117.761 for sdr grid search (US west coast)
-# grid_limits_lon: [-117.77, -117.75]
-# grid_limits_lat: [33.94, 33.96]
-# small around XC (US west coast)
-# grid_limits_lon: [-122, -114.47]
-# grid_limits_lat: [40.82, 45.82]
-# global
-# grid_limits_lon: [-180, 180]
-# grid_limits_lat: [-90, 90]
-# local synth
-# grid_limits_x: [-100, 100]
-# grid_limits_y: [-100, 100]
-do_depth: false
-depth_params: [15.5]
+# # synthetics
+grid_limits_x: [-100, 100]
+grid_limits_y: [-100, 100]
 
-n_processes: 50
+# grid_spacing in units depending on geometry_type:
+# kilometers, if geometry_type is "cartesian"
+# degrees, if geometry_type is "geographic".
+# grid_spacing: .1
+grid_spacing: .05  # synthetic
 
-# -- frequencies
-# secondary
-# fmin: 0.1
-# fmax: 0.2
-# primary
-# fmin: 0.05
-# fmax: 0.1
+# 4 -- DATA
 
-fmin: .3
-fmax: 5.5
+# List of seismogram locations, obspy-readable strings
+data_fn: ["/data/cen/u254/sven/global_mfp/data/for_publication/fig6_atlantic.mseed"]
+# data_fn: ['/data/cen/u254/sven/global_mfp/data/for_publication/fig5_chino_hills.mseed']
 
-# filterpairs: [[0.1, 0.2]]
-# filterpairs: [[0.05, 0.1]]
-# filterpairs: [[0.25, 0.5]]
-# filterpairs: [[0.06, 0.08]]
-# filterpairs: [[0.13, 0.15]]
-# filterpairs: [[0.10, 0.11], [0.11, 0.12], [0.12, 0.13], [0.13, 0.14], [0.14, 0.15], [0.15, 0.16], [0.16, 0.17], [0.17, 0.18], [0.18, 0.19], [0.19, 0.20]]
-# filterpairs: [[0.13, 0.15], [0.1, 0.2], [0.2, 0.3], [0.3, 0.4]]
-# filterpairs: [[0.13, 0.15], "None"]
-# filterpairs: ["None"]
-# filterpairs: [[0.01, 100]]
-# filterpairs: [[0.1, 0.5], [0.25, 0.5], "None"]
-# filterpairs: ["None"]
-filterpairs: [[0.13, 0.15]]
-# filterpairs: [[0.1, 0.5]]
-# filterpairs: [[0.3, 5.5]]
+# Location of station metadata files (stationXML)
+sta_xml_dir: "../data/stations/"
 
-# -- data
-# data_fn: ['../data/deconv/old/LHZ_new.mseed']
-# data_fn: ['../data/deconv/atlantic_2020_01_01/2020_01_01_10km.mseed']
-# data_fn: ['../data/deconv/atlantic_ridge_1/2019-02-14.mseed']
-# data_fn: ['../data/deconv/atlantic_ridge_1/2019-02-14_outliers.mseed']
-# data_fn: ['../data/deconv/atlantic_eq_larger/all_outlier.mseed']
-# data_fn: ['../data/deconv/atlantic_eq_larger/left.mseed']
-# data_fn: ['../data/deconv/atlantic_eq_larger/left_outlier.mseed']
-# data_fn: ['../data/deconv/atlantic_eq_larger/right.mseed']
-# data_fn: ['../data/deconv/northsea_eq/all_outlier.mseed']
-# data_fn: ['../data/deconv/northsea_2014_02/*.mseed']
-data_fn: ['../data/deconv/northsea_2019_02/*.mseed']
-# data_fn: ['../data/deconv/atlantic_ridge_1/2019-02-14_lim5_outliers.mseed']
-# data_fn: ['../data/deconv/atlantic_ridge_1/2019-02-14_arrays.mseed']
-# data_fn: ['../data/deconv/atlantic_ridge_1/2019-02-14_norsar_only.mseed']
-# data_fn: ['../data/deconv/atlantic_ridge_1/2019-02-14_cn.mseed']
-# data_fn: ['../data/deconv/XC/LHZ_chino.mseed']
-# data_fn: ['../data/deconv/CI/LHZ_chino.mseed']
-# data_fn: '../data/deconv/global/LHZ_sanitized.mseed'
-# data_fn: ['../data/deconv/global/LHZ_all.mseed']
-# data_fn: ['../data/deconv/CI/NoCal_2014-08-24.mseed', '../data/deconv/TA/NoCal_2014-08-24.mseed']
-# data_fn: ['/data/cen/u254/Data/Italy_arraydata/130301*BHZ.mseed', '/data/cen/u254/Data/Nice_arraydata/NICE/130301*HZ.mseed', '/data/cen/u254/MMarray_data/010313*HHZ.mseed']
-# data_fn: ['../data/deconv/TA/LHZ_PHNX.mseed', '../data/deconv/TA/TA_LHZ_chino_hills.mseed']
-# data_fn: ['../data/deconv/TA/NoCal_2014-08-24.mseed']
-# data_fn: ['../data/deconv/CI/NoCal_2014-08-24.mseed']
-sta_xml_dir: '../data/stations/'
-sampling_rate: 1
-# valid: Z, R, T
-components: ['Z']
-wavetypes: ['Z']
+# Sampling rate of the recorded data and synthetic green's functions.
+# Make sure this is correct for all data.
+# Green's functions database may only support up to 1Hz.
+sampling_rate: 1.0
 
-do_quality_check: true
-amp_thresholds: [0.0001, 0.05]
-std_thresholds: [0.000001, 0.0001]
+# 5 -- SYNTHETICS
 
-# -- synthetics
-do_synth: false
-# percentage of max amplitude of noise level
+# the following settings determine the synthetics setup
+# toggle whether to do synthetics or real data processing
+# If do_synth is set to false, remaining settings in "5 -- SYNTHETICS" can be skipped.
+do_synth: true
+
+# How should synthetic data be computed?
+# Options:
+# - "database_GF": Extract Green's functions from database (see below) and use as synthetic data.
+# - "ricker": Compute a ricker wavelet with velocity given in v_const (see below)
+synth_data_type: "database_GF"
+
+# Where are synthetic sources placed?
+# Coordinate units depend on geometry_type:
+# kilometers, if geometry_type is "cartesian"
+# degrees, if geometry_type is "geographic".
+# two sources example: [[0, 0], [75, 0]]
+synth_sources: [[0, 0]]
+
+# Add noise to synthetics
+# For no noise set add_noise_to_synth: 0 and add_noise_iterations: 1
+# Noise is random uniformly distributed with limits [-add_noise_to_synth, add_noise_to_synth]
+# Percentage of max amplitude of noise level
 add_noise_to_synth: 0
-# how often repeat
+
+# Run multiple iterations with different random noise added.
+# Can help test/inform stability of results.
 add_noise_iterations: 1
 
-synth_sources: [[0, 0]]
-# synthetically place stations or use real locations (from metadata)
-use_synth_stations: false
-# 'grid' or 'uniform' or 'file' or 'partial_circle'
+# Whether to place stations synthetically (more below) or use real locations (from metadata)
+# - true: Define synthetic locations as below.
+# - false: Run synthetic tests using station locations from the stations in data_fn.
+use_synth_stations: true
+
+# Method of defining synthetic station locations.
+# Settings for each method are below.
+# Options:
+# - "file": Provide an external list of locations. See examples in synth/
+# - "grid": Gridded distribution of evenly spaced stations
+# - "uniform": Uniform randomly distribution of stations
+# - "partial_circle": Define a circle around the [0, 0] and put stations along it.
+# - "real_locations_worldwide": Use ORFEUS webservice to get a list of all worldwide broadband stations
 synth_stations_mode: 'file'
 
-# 
+# if synth_stations_mode == 'file', which file to use
+# synth_stations_file: './synth/synth_three_arrays_50km.csv'
+synth_stations_file: "./synth/synth_two_arrays_50km_larger.csv"
+
+# if synth_stations_mode == "partial_circle", how circle is defined
+# total potential station locations along circle
 synth_stations_circle_n: 20
+# number of total potential station locations that are actually used
 synth_stations_circle_max: 20
+# radius of circle in kilometers
 synth_stations_circle_radius: 1
 
-# if mode is 'file', which file to use
-synth_stations_file: './synth/synth_two_arrays_100km.csv'
-# if mode is 'grid' or 'uniform'
-# will pick nearest evenly square-rootable number
+# if synth_stations_mode == 'grid' or 'uniform'
+# how many stations should be placed
 synth_stations_n: 400
 
 # alternatively, use locations of all open stations via 'ORFEUS'
 use_open_worldwide_stations: false
 
-# -- computational efficiency
-# decimals to round distances to
-# 0 = km-accuracy
-# -1: 10kms
-# -2: 100kms...
-decimal_round: 0
+# 6 -- GREEN's FUNCTION DATABASE (instaseis)
 
-# -- instaseis gf_db
-# used for gridpoint-gfs & synthetic data
+# Green's functions extracted from the database may be used (depending on other settings) for 
+# a) synthetic data if run is synthetic (defined above)
+# b) synthetic wavefield that data is matched against (defined below)
+# shorter 3880s
+gf_db_dir: "/data/cen/u254/sven/gf_dbs/prem_a_5s"
 # longer 17953s
 # gf_db_dir: '../../gf_dbs/prem_a_10s'
-# shorter 3880s
-gf_db_dir: '../../gf_dbs/prem_a_5s'
 
-# -- gf
-# directly use green's functions extracted from instaseis_db
-# type_of_gf: 'GF'
-# measure traveltime from green's functions extracted from instaseis_db
-# and use phase-only spectrum of shape: e^(-iωt)
-# type_of_gf: 'measure_from_GF'
-# estimate traveltime using constant velocity v_const and greatcircle propagation
-# and use phase-only spectrum of shape: e^(-iωt)
-type_of_gf: 'v_const'
-v_const: 3.0
-# Rough average estimate for 8s Lu et al. 2018
-# v_const: 2.6
+# 8 -- SYNTHETIC WAVEFIELD TO MATCH AGAINST
 
-exclude_land: true
+# How is the synthetic wavefield / steering vector computed
+# Options:
+# - "GF": extract synthetic wavefield from the Green's function database (see above)
+# - "v_const": Use spectra e^(-iωt), where t is estimated from v_const
+type_of_gf: "GF"
 
-# amplitude treatment
-# available modes:
-# "timedomain": time-domain normalisation
-# "whitening_GF": frequency-domain normalisation
-# "phase-correlation": phase-correlation
-# "spreading_attenuation": compute and apply spreading + attenuation terms, set parameters ampl_spreading_wavetype and ampl_quality_factor
+# if type_of_gf is "GF", at what depth does the source lie.
+source_depth: 0
+
+# How to handle correct for amplitudes of Green's functions from database.
+# For more details on the why and how, see Schippkus & Hadziioannou 2021.
+# We recommend "whitening_GF".
+# Options:
+# - "whitening_GF": frequency-domain normalisation
+# - "time_domain_norm": time-domain normalisation
+# - "spreading_attenuation": compute and apply spreading + attenuation terms for Rayleigh waves
 amplitude_treatment: "whitening_GF"
-# norm_mode_gf: 'time_domain'
-norm_mode_gf: 'whitening'
-normalize_gf: true
-norm_mode_data: 'whitening'
-normalize_data: false
 
-ampl_spreading_wavetype: "surface"
-ampl_quality_factor: 5000
+# if type_of_gf is "v_const", specify the velocity used.
+# spectra are computed as e^(-iωt), with traveltime t=Δx/v_const.
+# Δx is euclidean distance if geometry_type is cartesian
+# Δx is great-circle distance if geometry_type is geographic
+v_const: 3.3
 
-# fit measure
-# 'wasserstein', 'bartlett', 'l2'
-measure: 'bartlett'
+# 9 -- FREQUENCIES
 
-# transform traces into envelopes for matching
-do_energy: false
+# A list of all frequencyt pairs to analyse.
+# Options:
+# - "None": Full spectra are used. May need to be careful w/ frequency content of signals.
+# - [fmin, fmax]: Spectra are sliced to given frequency band.
+frequency_bands: ["None", [0.01, 0.5], [0.13, 0.15]]
+# frequency_bands: [[0.13, 0.15]]
 
-# Moment Tensor of source used for GF
-# functionality for strike/dip/rake grid search
+# 10 -- SOURCE MECHANISM
+
+# Moment tensor (MT) used to compute synthetic seismograms from Green's function database.
+# MT contains the 6 independent MT-components in this order: [Mxx, Myy, Mzz, Mxy, Mxz, Myz]
+# Explosion
+MT: [1, 1, 1, 0, 0, 0]
+# 2008 Mw5.4 Chino Hills earthquake moment tensor
+# from: https://web.archive.org/web/20090512092723/http://www.data.scec.org/mtarchive/solution.jsp?eventid=14383980
+# MT: [-1450, 602, 844, 495, -198, -689]
+
+# Instead of given a single source mechanism, the source mechanism may be grid-searched.
+# For simplicity, this is a grid-search over strike/dip/rake.
+# moment tensors are computed from strike/dip/rake.
 strike_dip_rake_gridsearch: false
+
+# Strike/dip/rake are searched only in independent range.
+# Search strike in limits [180, 360] with given spacing
 strike_spacing: 10
+# Search dip in limits [0, 90] with given spacing
 dip_spacing: 10
+# Search rake in limits [-180, 180] with given spacing
 rake_spacing: 10
-# Mxx, Myy, Mzz, Mxy, Mxz, Myz
-MT: [1, 1, 1, 0, 0, 0]  # explosion
-# https://web.archive.org/web/20090512092723/http://www.data.scec.org/mtarchive/solution.jsp?eventid=14383980
-# MT: [-1450, 602, 844, 495, -198, -689]  # CHINO HILLS DEVIATORIC
 
-# max distance in km at which gfs are taken into account for each grid point
-use_max_dist: false
-min_dist: 1000
-max_dist: 20000
+# 6 -- COMPUTATIONAL EFFICIENCY
 
-# plotting
+# How many processes are spawned to increase computational speed.
+# !! WARNING: Using only 1 process is not supported at the moment.
+n_processes: 50
+
+# Distances are rounded to reduce number of Green's functions that need to be computed.
+# Unit is always kilometers (also if geometry_type is geographic).
+# Examples what accuray each ronding resuls in:
+# 1 -> 0.1km; 0 -> 1km; -1 -> 10km, -2 -> 100km
+decimal_round: 2
+
+# Grid-points that are on-land can be excluded for speed.
+# Only applies, if geometry_type is geographic.
+exclude_land: false
+
+# 11 -- MISC
+
+# Plot results for each run 
 do_plot: true
-plot_antipode: false
 
-# iteration
-do_iteration: false
-iteration_type: "monte_carlo"
+# !! WARNING: Multiple components not yet supported. Only some basic groundwork layed out in the code.
+# !! Use ['Z'] for both at the moment. The code will fail otherwise.
+# list of all components to utilize
+components: ['Z']
+wavetypes: ['Z']
 
-# SVD
-# if n_svd_components > 0, SVD will be done and all components lower than n_svd_components will be excluded
+# Initial implentation of singular-value decomposition
+# !! WARNING: NOT CONFIMED TO BE WORKING. NEEDS FURTHER WORK.
+# In principle, SVD may be used to extract the eigenvectors of the cross-spectral density matrix
+# that contribute to signal vs those that contribute to noise.
 do_svd: false
-n_svd_components: [0, 5, 10, 25, 50, 100]
 
-#
-do_coherency_weighting: false
+# How many eigenvectors should be kept.
+# Code will loop over all values given in the list.
+# Must be smaller than number of stations (CSDM is of shape (n_stations, n_stations, ω)),
+# and there are n_stations eigenvectors.
+n_svd_components: [0, 5, 10, 25, 50, 100]
