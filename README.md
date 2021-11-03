@@ -24,9 +24,10 @@ This repository is the development platform for the method described above.
 ### Requirements
 
 - python 3.8+
-- obspy
-- cartopy
-- tqdm
-- pyyaml
-- instaseis
-- local green's function database, e.g., via syngine
+- [obspy](https://github.com/obspy/obspy/wiki/) to read seismic data
+- [cartopy](https://scitools.org.uk/cartopy/docs/latest/index.html) to plot maps
+- [tqdm](https://tqdm.github.io) to get progressbars
+- [pyyaml](https://pypi.org/project/PyYAML/) to parse the `settings.yml`
+- [instaseis](https://instaseis.net) to read the Green's function database
+- [global_land_mask](https://pypi.org/project/global-land-mask/) to check whether cells are on land
+- local green's function database readable by instaseis, e.g., downloaded from [syngine](http://ds.iris.edu/ds/products/syngine/)
