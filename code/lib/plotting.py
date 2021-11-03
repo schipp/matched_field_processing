@@ -1,10 +1,41 @@
-# only plot stack, if something to stack
-# from sven_utils import suColors
-# my_cmap = suColors.get_custom_cmap(name='devon', inverted=True)
-# if len(beampowers_per_start_time) > 1:
 import logging
 
-from cmcrameri import cm
+import numpy as np
+
+from .geometry import get_loc_from_timelist
+
+
+def plot_results(
+    beampowers: np.ndarray,
+    settings: dict,
+    start_time: "obspy.UTCDateTime",
+    grid_lon_coords: np.ndarray,
+    grid_lat_coords: np.ndarray,
+    station_locations: np.ndarray,
+    plot_identifier: str = "empty",
+) -> None:
+
+    # normalise windows for plotting
+    beampowers_to_plot = beampowers / np.nanmax(np.abs(beampowers))
+
+    # extract source location
+    if settings["do_synth"]:
+        source_loc = np.array(settings["synth_sources"]).T
+    elif not settings["do_synth"] and settings["time_window_mode"] == "file":
+        source_loc = get_loc_from_timelist(start_time, settings)
+    else:
+        source_loc = np.nan, np.nan
+    pcm = plot_beampowers_on_map(
+        lons=grid_lon_coords,
+        lats=grid_lat_coords,
+        beampowers=beampowers_to_plot,
+        station_locations=station_locations,
+        settings=settings,
+        outfile=f"{settings['project_basedir']}/{settings['project_id']}/plots/{start_time.timestamp}_{plot_identifier}.png",
+        source_loc=source_loc,
+        title=start_time,
+        plot_station_locations=True,
+    )
 
 
 def plot_beampowers_on_map(
@@ -22,9 +53,41 @@ def plot_beampowers_on_map(
     vmax=None,
     plot_station_locations=False,
 ):
+    """ Plots beampower distribution.
+
+    :param lons: [description]
+    :type lons: [type]
+    :param lats: [description]
+    :type lats: [type]
+    :param beampowers: [description]
+    :type beampowers: [type]
+    :param settings: [description]
+    :type settings: [type]
+    :param station_locations: [description], defaults to None
+    :type station_locations: [type], optional
+    :param outfile: [description], defaults to None
+    :type outfile: [type], optional
+    :param source_loc: [description], defaults to None
+    :type source_loc: [type], optional
+    :param title: [description], defaults to None
+    :type title: [type], optional
+    :param fig: [description], defaults to None
+    :type fig: [type], optional
+    :param ax: [description], defaults to None
+    :type ax: [type], optional
+    :param vmin: [description], defaults to None
+    :type vmin: [type], optional
+    :param vmax: [description], defaults to None
+    :type vmax: [type], optional
+    :param plot_station_locations: [description], defaults to False
+    :type plot_station_locations: bool, optional
+    :return: [description]
+    :rtype: [type]
+    """
+
     import cartopy.crs as ccrs
-    import numpy as np
     import pylab as plt
+    from cmcrameri import cm
 
     plt.style.use("dracula")
 
@@ -48,7 +111,7 @@ def plot_beampowers_on_map(
     # _map = Basemap(projection='eck4',lon_0=0,resolution='c', ax=ax)
     # _map.drawcoastlines(linewidth=.5, color='k')
     # _map.drawparallels(np.arange(-90.,120.,30.))
-    # _map.drawmeridians(np.arange(0.,420.,60.))
+    # _map.drawmeridians(np.arange(0.,420.,60.))z
     trans = ccrs.PlateCarree()
 
     if settings["geometry_type"] == "geographic":
@@ -196,22 +259,22 @@ def plot_beampowers_on_map(
                 label="Synth. Source",
             )
 
-    if settings["plot_antipode"]:
-        max_indices = np.unravel_index(
-            np.argmax(beampowers.T, axis=None), beampowers.T.shape
-        )
-        lon_max = lons[max_indices[0]]
-        lat_max = lats[max_indices[1]]
-        logging.info(f"{lon_max=}\t{lat_max=}")
-        ax.scatter(
-            lon_max,
-            lat_max,
-            edgecolors="k",
-            linewidth=0.5,
-            s=10,
-            marker="*",
-            transform=ccrs.PlateCarree(),
-        )
+    # if settings["plot_antipode"]:
+    #     max_indices = np.unravel_index(
+    #         np.argmax(beampowers.T, axis=None), beampowers.T.shape
+    #     )
+    #     lon_max = lons[max_indices[0]]
+    #     lat_max = lats[max_indices[1]]
+    #     logging.info(f"{lon_max=}\t{lat_max=}")
+    #     ax.scatter(
+    #         lon_max,
+    #         lat_max,
+    #         edgecolors="k",
+    #         linewidth=0.5,
+    #         s=10,
+    #         marker="*",
+    #         transform=ccrs.PlateCarree(),
+    #     )
 
     if title and settings["geometry_type"] == "geographic":
         ax.set_title(title)
