@@ -10,16 +10,17 @@ This repository is the development platform for the method described above.
 
 ## TODO
 
-- [ ] Clean-up for publication.
-    - [ ] Commit current status
-    - [ ] Remove unused code sections
-    - [ ] Remove unecessary functions and corresponding logic
-        - [ ] SVD?
-        - [ ] Coherency-weighting?
-    - [ ] Add support for depth from config
-    - [ ] Improve amplitude correction logic
-    - [ ] Check all comments
+- [X] Clean-up for publication.
+    - [X] Commit current status
+    - [X] Remove unused code sections
+    - [X] Remove unecessary functions and corresponding logic
+        - [X] SVD? Decided to keep for now.
+        - [X] Coherency-weighting?
+    - [X] Add support for depth from config
+    - [X] Improve amplitude correction logic
+    - [X] Check all comments
 - [ ] Rewrite to use acoular.
+- [ ] Move multiprocessing logic to external module / enable single-core
 ### Requirements
 
 - python 3.8+
