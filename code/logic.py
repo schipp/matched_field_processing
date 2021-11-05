@@ -21,7 +21,7 @@ from lib.geometry import (
 )
 from lib.gf import get_gf_spectra_for_dists
 from lib.math import get_csdm, svd_csdm
-from lib.misc import settings_gen
+from lib.misc import check_settings_is_valid, settings_gen
 from lib.plotting import plot_results
 from lib.synth import get_synth_spectra
 from lib.time import get_start_times
@@ -33,6 +33,8 @@ if __name__ == "__main__":
     # load settings
     with open("settings.yml", "r") as stream:
         settings = yaml.safe_load(stream)
+
+    check_settings_is_valid(settings=settings)
 
     # parse whether output should be verbose
     # parser = argparse.ArgumentParser()

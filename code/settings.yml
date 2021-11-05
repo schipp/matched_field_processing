@@ -4,7 +4,7 @@
 project_basedir: "/data/cen/u254/sven/global_mfp/projects/"
 
 # a subfolder is created for project_id to differentiate runs with varying settings.yml
-project_id: "173_redo_two_source_5"
+project_id: "173_redo_ampl_none"
 
 # 2 -- TIME
 
@@ -95,8 +95,8 @@ synth_data_type: "database_GF"
 # Coordinate units depend on geometry_type:
 # kilometers, if geometry_type is "cartesian"
 # degrees, if geometry_type is "geographic".
-synth_sources: [[-15, 0], [15, 0]]
-# synth_sources: [[0, 0]]
+# synth_sources: [[0, 30], [25, 30]]
+synth_sources: [[0, 0]]
 
 # Add noise to synthetics
 # For no noise set add_noise_to_synth: 0 and add_noise_iterations: 1
@@ -152,7 +152,7 @@ gf_db_dir: "/data/cen/u254/sven/gf_dbs/prem_a_5s"
 # longer 17953s
 # gf_db_dir: '../../gf_dbs/prem_a_10s'
 
-# 8 -- SYNTHETIC WAVEFIELD TO MATCH AGAINST
+# 7 -- SYNTHETIC WAVEFIELD TO MATCH AGAINST
 
 # How is the synthetic wavefield / steering vector computed
 # Options:
@@ -167,10 +167,11 @@ source_depth: 0
 # For more details on the why and how, see Schippkus & Hadziioannou 2021.
 # We recommend "whitening_GF".
 # Options:
+# - "None": don't treat amplitudes
 # - "whitening_GF": frequency-domain normalisation
 # - "time_domain_norm": time-domain normalisation
 # - "spreading_attenuation": compute and apply spreading + attenuation terms for Rayleigh waves
-amplitude_treatment: "whitening_GF"
+amplitude_treatment: "None"
 
 # if type_of_gf is "v_const", specify the velocity used.
 # spectra are computed as e^(-iωt), with traveltime t=Δx/v_const.
@@ -178,16 +179,16 @@ amplitude_treatment: "whitening_GF"
 # Δx is great-circle distance if geometry_type is geographic
 v_const: 3.3
 
-# 9 -- FREQUENCIES
+# 8 -- FREQUENCIES
 
 # A list of all frequencyt pairs to analyse.
 # Options:
 # - "None": Full spectra are used. May need to be careful w/ frequency content of signals.
 # - [fmin, fmax]: Spectra are sliced to given frequency band.
 # frequency_bands: ["None", [0.01, 0.5], [0.13, 0.15]]
-frequency_bands: [[0.13, 0.15], [0.26, .3]]
+frequency_bands: [[0.01, 0.5], [0.13, 0.15]]
 
-# 10 -- SOURCE MECHANISM
+# 9 -- SOURCE MECHANISM
 
 # Moment tensor (MT) used to compute synthetic seismograms from Green's function database.
 # MT contains the 6 independent MT-components in this order: [Mxx, Myy, Mzz, Mxy, Mxz, Myz]
@@ -210,7 +211,7 @@ dip_spacing: 10
 # Search rake in limits [-180, 180] with given spacing
 rake_spacing: 10
 
-# 6 -- COMPUTATIONAL EFFICIENCY
+# 10 -- COMPUTATIONAL EFFICIENCY
 
 # How many processes are spawned to increase computational speed.
 # !! WARNING: Using only 1 process is not supported at the moment.
