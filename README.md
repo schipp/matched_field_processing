@@ -10,17 +10,9 @@ This repository is the development platform for the method described above.
 
 ## TODO
 
-- [X] Clean-up for publication.
-    - [X] Commit current status
-    - [X] Remove unused code sections
-    - [X] Remove unecessary functions and corresponding logic
-        - [X] SVD? Decided to keep for now.
-        - [X] Coherency-weighting?
-    - [X] Add support for depth from config
-    - [X] Improve amplitude correction logic
-    - [X] Check all comments
-- [ ] Rewrite to use acoular.
-- [ ] Move multiprocessing logic to external module / enable single-core
+- [ ] A smarter way of optimizing the grid/processing needs
+- [ ] Move multiprocessing logic to function & enable single-core runs
+- [ ] Beampower computation based on acoular
 ### Requirements
 
 - python 3.8+

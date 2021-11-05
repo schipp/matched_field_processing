@@ -4,7 +4,7 @@
 project_basedir: "/data/cen/u254/sven/global_mfp/projects/"
 
 # a subfolder is created for project_id to differentiate runs with varying settings.yml
-project_id: '173_redevelop_synth_test_larger_array_GF_densergrid'
+project_id: "173_redo_two_source_5"
 
 # 2 -- TIME
 
@@ -62,7 +62,7 @@ grid_limits_y: [-100, 100]
 # kilometers, if geometry_type is "cartesian"
 # degrees, if geometry_type is "geographic".
 # grid_spacing: .1
-grid_spacing: .05  # synthetic
+grid_spacing: .25  # synthetic
 
 # 4 -- DATA
 
@@ -95,8 +95,8 @@ synth_data_type: "database_GF"
 # Coordinate units depend on geometry_type:
 # kilometers, if geometry_type is "cartesian"
 # degrees, if geometry_type is "geographic".
-# two sources example: [[0, 0], [75, 0]]
-synth_sources: [[0, 0]]
+synth_sources: [[-15, 0], [15, 0]]
+# synth_sources: [[0, 0]]
 
 # Add noise to synthetics
 # For no noise set add_noise_to_synth: 0 and add_noise_iterations: 1
@@ -184,8 +184,8 @@ v_const: 3.3
 # Options:
 # - "None": Full spectra are used. May need to be careful w/ frequency content of signals.
 # - [fmin, fmax]: Spectra are sliced to given frequency band.
-frequency_bands: ["None", [0.01, 0.5], [0.13, 0.15]]
-# frequency_bands: [[0.13, 0.15]]
+# frequency_bands: ["None", [0.01, 0.5], [0.13, 0.15]]
+frequency_bands: [[0.13, 0.15], [0.26, .3]]
 
 # 10 -- SOURCE MECHANISM
 
