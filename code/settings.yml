@@ -4,7 +4,7 @@
 project_basedir: "/data/cen/u254/sven/global_mfp/projects/"
 
 # a subfolder is created for project_id to differentiate runs with varying settings.yml
-project_id: "173_redo_ampl_none"
+project_id: "174_redo_2019_02_v3.2"
 
 # 2 -- TIME
 
@@ -25,7 +25,7 @@ time_window_mode: "overlapping_windows"
 start_time: "2019-02-01T01:00:00.0Z"
 
 # Last time windows ends no later than, given as obspy.UTCDateTime-readable string.
-end_time: "2019-02-08T23:59:59.0Z"
+end_time: "2019-02-07T23:59:59.0Z"
 
 # Overlap windows by how much in given time frame.
 # Given as a ratio. allowed overlaps: 0 =< overlap < 1.
@@ -36,33 +36,33 @@ external_timelist: "/data/cen/u254/sven/global_mfp/code/timelists/timelist_chino
 
 # for debugging purposes or synthetic runs, it can be useful to run only a single time window
 # TODO: handle this more elegantly in code, especially for synthetic tests.
-do_only_one_timewindow: true
+do_only_one_timewindow: false
 
 # 3 -- GEOMETRY
 
 # Type of coordinate system used:
 # - "cartesian", when using local coordinates (or UTM) and distances are in meters
 # - "geographic", when using georeferenced data and distances are in degrees
-geometry_type: "cartesian"
+geometry_type: "geographic"
 
 # Longitude/X and Latitude/Y limits of the grid.
 # if geometry_type is "cartesian", limits must be given as grid_limits_x, grid_limits_y
 # if geometry_type is "geographic", limits must be given as grid_limits_lon, grid_limits_lat
 # # north sea
-# grid_limits_lon: [-18, 20]
-# grid_limits_lat: [40, 66]
+grid_limits_lon: [-18, 20]
+grid_limits_lat: [39, 66]
 # # small around CI
 # grid_limits_lon: [-121, -113]
 # grid_limits_lat: [32, 37]
 # # synthetics
-grid_limits_x: [-100, 100]
-grid_limits_y: [-100, 100]
+# grid_limits_x: [-100, 100]
+# grid_limits_y: [-100, 100]
 
 # grid_spacing in units depending on geometry_type:
 # kilometers, if geometry_type is "cartesian"
 # degrees, if geometry_type is "geographic".
-# grid_spacing: .1
-grid_spacing: .25  # synthetic
+grid_spacing: .1
+# grid_spacing: .25  # synthetic
 
 # 4 -- DATA
 
@@ -83,7 +83,7 @@ sampling_rate: 1.0
 # the following settings determine the synthetics setup
 # toggle whether to do synthetics or real data processing
 # If do_synth is set to false, remaining settings in "5 -- SYNTHETICS" can be skipped.
-do_synth: true
+do_synth: false
 
 # How should synthetic data be computed?
 # Options:
@@ -95,8 +95,8 @@ synth_data_type: "database_GF"
 # Coordinate units depend on geometry_type:
 # kilometers, if geometry_type is "cartesian"
 # degrees, if geometry_type is "geographic".
-# synth_sources: [[0, 30], [25, 30]]
-synth_sources: [[0, 0]]
+synth_sources: [[0, 0], [0, 40]]
+# synth_sources: [[0, 0]]
 
 # Add noise to synthetics
 # For no noise set add_noise_to_synth: 0 and add_noise_iterations: 1
@@ -111,7 +111,7 @@ add_noise_iterations: 1
 # Whether to place stations synthetically (more below) or use real locations (from metadata)
 # - true: Define synthetic locations as below.
 # - false: Run synthetic tests using station locations from the stations in data_fn.
-use_synth_stations: true
+use_synth_stations: false
 
 # Method of defining synthetic station locations.
 # Settings for each method are below.
@@ -158,26 +158,26 @@ gf_db_dir: "/data/cen/u254/sven/gf_dbs/prem_a_5s"
 # Options:
 # - "GF": extract synthetic wavefield from the Green's function database (see above)
 # - "v_const": Use spectra e^(-iωt), where t is estimated from v_const
-type_of_gf: "GF"
+type_of_gf: "v_const"
 
 # if type_of_gf is "GF", at what depth does the source lie.
+# given in kilometers
 source_depth: 0
 
 # How to handle correct for amplitudes of Green's functions from database.
 # For more details on the why and how, see Schippkus & Hadziioannou 2021.
 # We recommend "whitening_GF".
 # Options:
-# - "None": don't treat amplitudes
 # - "whitening_GF": frequency-domain normalisation
 # - "time_domain_norm": time-domain normalisation
-# - "spreading_attenuation": compute and apply spreading + attenuation terms for Rayleigh waves
-amplitude_treatment: "None"
+# - "surface_wave_spreading": Correct for surface wave spreading
+amplitude_treatment: "whitening_GF"
 
 # if type_of_gf is "v_const", specify the velocity used.
 # spectra are computed as e^(-iωt), with traveltime t=Δx/v_const.
 # Δx is euclidean distance if geometry_type is cartesian
 # Δx is great-circle distance if geometry_type is geographic
-v_const: 3.3
+v_const: 3.2
 
 # 8 -- FREQUENCIES
 
@@ -186,7 +186,8 @@ v_const: 3.3
 # - "None": Full spectra are used. May need to be careful w/ frequency content of signals.
 # - [fmin, fmax]: Spectra are sliced to given frequency band.
 # frequency_bands: ["None", [0.01, 0.5], [0.13, 0.15]]
-frequency_bands: [[0.01, 0.5], [0.13, 0.15]]
+# frequency_bands: [[0.05, 0.2], [0.1, 0.2]]
+frequency_bands: [[0.13, 0.15]]
 
 # 9 -- SOURCE MECHANISM
 
@@ -221,11 +222,11 @@ n_processes: 50
 # Unit is always kilometers (also if geometry_type is geographic).
 # Examples what accuray each ronding resuls in:
 # 1 -> 0.1km; 0 -> 1km; -1 -> 10km, -2 -> 100km
-decimal_round: 2
+decimal_round: 0
 
 # Grid-points that are on-land can be excluded for speed.
 # Only applies, if geometry_type is geographic.
-exclude_land: false
+exclude_land: true
 
 # 11 -- MISC
 
