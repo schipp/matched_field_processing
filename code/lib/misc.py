@@ -80,7 +80,7 @@ def sdr_grid_gen(settings):
         yield sdr
 
 
-def check_settings_is_valid(settings):
+def check_settings_valid(settings):
     """ Perform some sanity checks whether all settings have (proably) been set correctly.
 
     :param settings: dict containing all parameters for current run.
@@ -286,8 +286,8 @@ def check_settings_is_valid(settings):
         "None",
         "whitening_GF",
         "time_domain_norm",
-        "spreading_attenuation",
-    ], "amplitude_treatment must be 'None', 'whitening_GF', 'time_domain_norm', 'spreading_attenuation'"
+        "surface_wave_spreading",
+    ], "amplitude_treatment must be 'None', 'whitening_GF', 'time_domain_norm', 'surface_wave_spreading'"
 
     if settings["type_of_gf"]:
         assert settings["v_const"] > 0
