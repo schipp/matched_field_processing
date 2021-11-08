@@ -90,7 +90,7 @@ def get_gf_spectrum(
     # relevant base GFs
     st = instaseis_db.get_greens_function(
         epicentral_distance_in_degree=kilometers2degrees(dist_az[0]),
-        source_depth_in_m=settings["source_depth"],
+        source_depth_in_m=settings["source_depth"] * 1000,
         dt=sampling_rate,
     )
 
@@ -196,15 +196,11 @@ def get_gf_spectrum(
             spec_z = whiten_spectrum(spec_z)
             spec_r = whiten_spectrum(spec_r)
             spec_t = whiten_spectrum(spec_t)
-        if settings["amplitude_treatment"] == "spreading_attenuation":
+        if settings["amplitude_treatment"] == "surface_wave_spreading":
             dist = dist_az[0]
-            v = 2600
-            Q = 6
-            omega = 2 * np.pi * np.fft.fftfreq(len(uz), 1 / sampling_rate)
-            # Corciulo et al 2012 - Equation 3 + Bowden et al. 2020 - Appendix A
-            A = np.sqrt((2 * v) / (np.pi * omega * dist)) * np.exp(
-                (-omega * dist) / (2 * v * Q)
-            ) + np.sqrt((2) / (np.pi * dist)) * np.exp(-1j * np.pi / 4)
+            # amplitude term in Corciulo et al. 2012 - equation 3
+            # accounts for geometrical spreading of surface waves
+            A = np.sqrt((2) / (np.pi * dist)) * np.exp(-1j * np.pi / 4)
             spec_z /= A
             spec_r /= A
             spec_t /= A
