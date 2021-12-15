@@ -1,10 +1,10 @@
 # 1 -- GLOBAL SETTINGS
 
 # base directory to save results in
-project_basedir: "/path/to/your/projects_folder/"
+project_basedir: "/data/cen/u254/sven/global_mfp/projects/"
 
 # a subfolder is created for project_id to differentiate runs with varying settings.yml
-project_id: "project_id_of_your_choosing"
+project_id: "174_redo_2019_02_v3.2"
 
 # 2 -- TIME
 
@@ -12,6 +12,7 @@ project_id: "project_id_of_your_choosing"
 # IMPORTANT: for now dictated by length of GFs in gf database
 # e.g., 3880s for aniso PREM 5s database from syngine
 window_length: 3880
+# window_length: 17953
 
 # Mode of windows' start time determination: 
 # - "file": extract start times from time external_timelist
@@ -31,38 +32,46 @@ end_time: "2019-02-07T23:59:59.0Z"
 overlap: 0.5
 
 # if time_window_mode == "file" (see above) use this file
-external_timelist: "/path/to/timelists/timelist_chino.csv"
+external_timelist: "/data/cen/u254/sven/global_mfp/code/timelists/timelist_chino.csv"
 
 # for debugging purposes or synthetic runs, it can be useful to run only a single time window
 # TODO: handle this more elegantly in code, especially for synthetic tests.
-do_only_one_timewindow: true
+do_only_one_timewindow: false
 
 # 3 -- GEOMETRY
 
 # Type of coordinate system used:
 # - "cartesian", when using local coordinates (or UTM) and distances are in meters
 # - "geographic", when using georeferenced data and distances are in degrees
-geometry_type: "cartesian"
+geometry_type: "geographic"
 
 # Longitude/X and Latitude/Y limits of the grid.
 # if geometry_type is "cartesian", limits must be given as grid_limits_x, grid_limits_y
 # if geometry_type is "geographic", limits must be given as grid_limits_lon, grid_limits_lat
-grid_limits_x: [-100, 100]
-grid_limits_y: [-100, 100]
+# # north sea
+grid_limits_lon: [-18, 20]
+grid_limits_lat: [39, 66]
+# # small around CI
+# grid_limits_lon: [-121, -113]
+# grid_limits_lat: [32, 37]
+# # synthetics
+# grid_limits_x: [-100, 100]
+# grid_limits_y: [-100, 100]
 
 # grid_spacing in units depending on geometry_type:
 # kilometers, if geometry_type is "cartesian"
 # degrees, if geometry_type is "geographic".
-grid_spacing: .25
+grid_spacing: .1
+# grid_spacing: .25  # synthetic
 
 # 4 -- DATA
 
 # List of seismogram locations, obspy-readable strings
-data_fn: ["/path/to/data/if/needed/fig6_atlantic.mseed"]
+data_fn: ["/data/cen/u254/sven/global_mfp/data/for_publication/fig6_atlantic.mseed"]
+# data_fn: ['/data/cen/u254/sven/global_mfp/data/for_publication/fig5_chino_hills.mseed']
 
 # Location of station metadata files (stationXML)
-# CAUTION: at the moment requires one file per station of shape "{net}.{sta}.xml"
-sta_xml_dir: "/data/stations/"
+sta_xml_dir: "../data/stations/"
 
 # Sampling rate of the recorded data and synthetic green's functions.
 # Make sure this is correct for all data.
@@ -74,7 +83,7 @@ sampling_rate: 1.0
 # the following settings determine the synthetics setup
 # toggle whether to do synthetics or real data processing
 # If do_synth is set to false, remaining settings in "5 -- SYNTHETICS" can be skipped.
-do_synth: true
+do_synth: false
 
 # How should synthetic data be computed?
 # Options:
@@ -86,7 +95,8 @@ synth_data_type: "database_GF"
 # Coordinate units depend on geometry_type:
 # kilometers, if geometry_type is "cartesian"
 # degrees, if geometry_type is "geographic".
-synth_sources: [[0, 0]]
+synth_sources: [[0, 0], [0, 40]]
+# synth_sources: [[0, 0]]
 
 # Add noise to synthetics
 # For no noise set add_noise_to_synth: 0 and add_noise_iterations: 1
@@ -101,7 +111,7 @@ add_noise_iterations: 1
 # Whether to place stations synthetically (more below) or use real locations (from metadata)
 # - true: Define synthetic locations as below.
 # - false: Run synthetic tests using station locations from the stations in data_fn.
-use_synth_stations: true
+use_synth_stations: false
 
 # Method of defining synthetic station locations.
 # Settings for each method are below.
@@ -114,7 +124,8 @@ use_synth_stations: true
 synth_stations_mode: 'file'
 
 # if synth_stations_mode == 'file', which file to use
-synth_stations_file: "./synth/synth_two_arrays.csv"
+# synth_stations_file: './synth/synth_three_arrays_50km.csv'
+synth_stations_file: "./synth/synth_two_arrays_50km_larger.csv"
 
 # if synth_stations_mode == "partial_circle", how circle is defined
 # total potential station locations along circle
@@ -136,8 +147,10 @@ use_open_worldwide_stations: false
 # Green's functions extracted from the database may be used (depending on other settings) for 
 # a) synthetic data if run is synthetic (defined above)
 # b) synthetic wavefield that data is matched against (defined below)
-# download from https://ds.iris.edu/ds/products/syngine/
-gf_db_dir: "/path/to/gf_database/prem_a_5s"
+# shorter 3880s
+gf_db_dir: "/data/cen/u254/sven/gf_dbs/prem_a_5s"
+# longer 17953s
+# gf_db_dir: '../../gf_dbs/prem_a_10s'
 
 # 7 -- SYNTHETIC WAVEFIELD TO MATCH AGAINST
 
@@ -145,7 +158,7 @@ gf_db_dir: "/path/to/gf_database/prem_a_5s"
 # Options:
 # - "GF": extract synthetic wavefield from the Green's function database (see above)
 # - "v_const": Use spectra e^(-iωt), where t is estimated from v_const
-type_of_gf: "GF"
+type_of_gf: "v_const"
 
 # if type_of_gf is "GF", at what depth does the source lie.
 # given in kilometers
@@ -155,17 +168,16 @@ source_depth: 0
 # For more details on the why and how, see Schippkus & Hadziioannou 2021.
 # We recommend "whitening_GF".
 # Options:
-# - "None": no treatment
 # - "whitening_GF": frequency-domain normalisation
 # - "time_domain_norm": time-domain normalisation
-# - "spreading_attenuation": compute and apply spreading + attenuation terms for Rayleigh waves
+# - "surface_wave_spreading": Correct for surface wave spreading
 amplitude_treatment: "whitening_GF"
 
 # if type_of_gf is "v_const", specify the velocity used.
 # spectra are computed as e^(-iωt), with traveltime t=Δx/v_const.
 # Δx is euclidean distance if geometry_type is cartesian
 # Δx is great-circle distance if geometry_type is geographic
-v_const: 3.0
+v_const: 3.2
 
 # 8 -- FREQUENCIES
 
@@ -173,7 +185,9 @@ v_const: 3.0
 # Options:
 # - "None": Full spectra are used. May need to be careful w/ frequency content of signals.
 # - [fmin, fmax]: Spectra are sliced to given frequency band.
-frequency_bands: [[0.05, 0.2], [0.13, 0.15]]
+# frequency_bands: ["None", [0.01, 0.5], [0.13, 0.15]]
+# frequency_bands: [[0.05, 0.2], [0.1, 0.2]]
+frequency_bands: [[0.13, 0.15]]
 
 # 9 -- SOURCE MECHANISM
 
@@ -181,6 +195,9 @@ frequency_bands: [[0.05, 0.2], [0.13, 0.15]]
 # MT contains the 6 independent MT-components in this order: [Mxx, Myy, Mzz, Mxy, Mxz, Myz]
 # Explosion
 MT: [1, 1, 1, 0, 0, 0]
+# 2008 Mw5.4 Chino Hills earthquake moment tensor
+# from: https://web.archive.org/web/20090512092723/http://www.data.scec.org/mtarchive/solution.jsp?eventid=14383980
+# MT: [-1450, 602, 844, 495, -198, -689]
 
 # Instead of given a single source mechanism, the source mechanism may be grid-searched.
 # For simplicity, this is a grid-search over strike/dip/rake.
@@ -205,11 +222,11 @@ n_processes: 50
 # Unit is always kilometers (also if geometry_type is geographic).
 # Examples what accuray each ronding resuls in:
 # 1 -> 0.1km; 0 -> 1km; -1 -> 10km, -2 -> 100km
-decimal_round: 2
+decimal_round: 0
 
 # Grid-points that are on-land can be excluded for speed.
 # Only applies, if geometry_type is geographic.
-exclude_land: false
+exclude_land: true
 
 # 11 -- MISC
 
@@ -223,7 +240,7 @@ components: ['Z']
 wavetypes: ['Z']
 
 # Initial implentation of singular-value decomposition
-# !! WARNING: NOT CONFIRMED TO BE WORKING. NEEDS FURTHER WORK.
+# !! WARNING: NOT CONFIMED TO BE WORKING. NEEDS FURTHER WORK.
 # In principle, SVD may be used to extract the eigenvectors of the cross-spectral density matrix
 # that contribute to signal vs those that contribute to noise.
 do_svd: false
