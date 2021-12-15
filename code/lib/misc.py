@@ -295,6 +295,7 @@ def check_settings_valid(settings):
     # 8 -- FREQUENCIES
 
     assert all(len(_) == 2 for _ in settings["frequency_bands"])
+    assert all(fp[0] < fp[1] for fp in settings["frequency_bands"])
 
     # 9 -- SOURCE MECHANISM
 

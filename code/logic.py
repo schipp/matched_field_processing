@@ -256,11 +256,19 @@ if __name__ == "__main__":
         # increase computational speed by excluding frequencies outside of specified band
         if isinstance(fp, list):
             freqs_of_interest_idx = (freqs >= fp[0]) & (freqs <= fp[1])
+            # handle if band is too narrow and excludes all frequencies
+            if len(freqs_of_interest_idx) == 0:
+                logging.warning(
+                    f"Frequency band too narrow. Picking {freqs[freqs_of_interest_idx]=} Hz instead."
+                )
+                # pick single frequency closest to mean filterband then
+                freqs_of_interest_idx = np.argmin(np.abs(freqs - np.mean(fp)))
             # limit gf spectra to frequencies of interest
             gf_spectra = gf_spectra_all[:, freqs_of_interest_idx]
         else:
             freqs_of_interest_idx = None
             gf_spectra = gf_spectra_all
+        logging.debug(f"Relevant freq: {freqs[freqs_of_interest_idx]=}")
         logging.info(f"After limiting to relevant freqs: {gf_spectra.shape=}")
 
         filename = f"{project_dir}/out/out_{start_time.timestamp}_{settings['window_length']}_{fp}_{n_svd}_{noise_idx}_{sdr}.npy"
