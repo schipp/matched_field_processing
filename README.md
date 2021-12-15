@@ -1,5 +1,7 @@
 # Matched Field Processing using numerical Green's Functions from pre-computed databases
 
+[![DOI](https://zenodo.org/badge/423388944.svg)](https://zenodo.org/badge/latestdoi/423388944)
+
 <img align="left" src="assets/mfp.png" width="400px">
 
 Matched Field Processing (MFP) is a technique to locate the source of a recorded wave field. It is the generalization of beamforming, allowing for curved wavefronts. In the standard approach to MFP, simple analytical Green's functions are used as synthetic wave fields that the recorded wave fields are matched against. We introduce an advancement of MFP by utilizing Green's functions computed numerically for real Earth structure as synthetic wave fields. This allows in principle to incorporate the full complexity of elastic wave propagation, and through that provide more precise estimates of the recorded wave field's origin. 
