@@ -1,17 +1,17 @@
-# Matched Field Processing using full Green's Functions from pre-computed databases
+# Matched Field Processing using numerical Green's Functions from pre-computed databases
 
-Precise knowledge of the sources of seismic noise is fundamental to our understanding of the ambient seismic field. Two approaches to locating sources exist currently. One is based on comparing estimated Green's functions from cross-correlation of seismic noise with synthetically computed correlation functions. This approach is computationally expensive and not yet widely adopted. The other, more common approach is Beamforming, where a beam is computed by shifting waveforms in time corresponding to a potential slowness of an arriving wave front. Beamforming allows fast computations, but samples the slowness domain, thus limiting it to the plane-wave assumption and sources outside of the array.
+<img align="left" src="assets/mfp.png" width="400px">
 
-Matched Field Processing (MFP) is Beamforming in the spatial domain. By probing potential source locations directly, it allows for arbitrary wave propagation in the medium and sources inside of arrays. MFP has been successfully applied on local scale using constant velocity models, and regional scale using travel times estimated from phase velocity maps. At global scale, a constant velocity model is inadequate and phase velocity maps have not yet been published for periods below ~20s.
+Matched Field Processing (MFP) is a technique to locate the source of a recorded wave field. It is the generalization of beamforming, allowing for curved wavefronts. In the standard approach to MFP, simple analytical Green's functions are used as synthetic wave fields that the recorded wave fields are matched against. We introduce an advancement of MFP by utilizing Green's functions computed numerically for real Earth structure as synthetic wave fields. This allows in principle to incorporate the full complexity of elastic wave propagation, and through that provide more precise estimates of the recorded wave field's origin. 
 
-To advance MFP towards the global scale, we replace the need for travel-time information with full synthetic Green's functions. This allows to capture the full complexity of wave propagation by including amplitude information and multiple phases. 
+This repository acts as the development platform for this approach.
 
-This repository is the development platform for the method described above.
+A manuscript describing the method in detail is available as a pre-print at EarthArXiv (---) and submitted to Geophyiscal Journal International. A separate repository contains the information (what data was used, settings files, figure scripts) to reproduce the results we present in our manuscript: [seismology-hamburg/schippkus_hadziioannou_2022](https://github.com/seismology-hamburg/schippkus_hadziioannou_2022).
 
 ## TODO
 
-- [ ] A smarter way of optimizing the grid/processing needs
-- [ ] Move multiprocessing logic to function & enable single-core runs
+- [ ] A smarter way of optimizing the grid/processing needs than manually-selected rounding
+- [ ] Move multiprocessing logic to separate function & enable single-core runs
 - [ ] Beampower computation based on acoular
 ### Requirements
 
@@ -21,5 +21,5 @@ This repository is the development platform for the method described above.
 - [tqdm](https://tqdm.github.io) to get progressbars
 - [pyyaml](https://pypi.org/project/PyYAML/) to parse the `settings.yml`
 - [instaseis](https://instaseis.net) to read the Green's function database
-- [global_land_mask](https://pypi.org/project/global-land-mask/) to check whether cells are on land
 - local green's function database readable by instaseis, e.g., downloaded from [syngine](http://ds.iris.edu/ds/products/syngine/)
+- [global_land_mask](https://pypi.org/project/global-land-mask/) for fast checks whether cells are on land
