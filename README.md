@@ -8,7 +8,7 @@ Matched Field Processing (MFP) is a technique to locate the source of a recorded
 
 This repository acts as the development platform for this approach.
 
-A manuscript describing the method in detail is available as a pre-print at EarthArXiv (---) and submitted to Geophyiscal Journal International. A separate repository contains the information (what data was used, settings files, figure scripts) to reproduce the results we present in our manuscript: [seismology-hamburg/schippkus_hadziioannou_2022](https://github.com/seismology-hamburg/schippkus_hadziioannou_2022).
+A manuscript describing the method in detail is available as a pre-print at EarthArXiv [doi.org/10.31223/X5492H](https://doi.org/10.31223/X5492H) and submitted to Geophysical Journal International for peer review. A separate repository contains the information (what data was used, settings files, figure scripts) to reproduce the results we present in our manuscript: [seismology-hamburg/schippkus_hadziioannou_2022](https://github.com/seismology-hamburg/schippkus_hadziioannou_2022).
 
 ## TODO
 
