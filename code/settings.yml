@@ -69,6 +69,14 @@ sta_xml_dir: "/data/stations/"
 # Green's functions database may only support up to 1Hz.
 sampling_rate: 1.0
 
+# Mode for handling missing data.
+# The goal is to have consistent results for every analysed time window
+# by ensuring that all stations are used for all windows.
+# Options:
+# - "skip_time": Skip time windows where at least one station is missing data
+# - "skip_stations": Remove stations from analysis for which at least one time window is missing data
+data_gap_mode: "skip_time"
+
 # 5 -- SYNTHETICS
 
 # the following settings determine the synthetics setup

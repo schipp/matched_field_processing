@@ -105,9 +105,11 @@ if __name__ == "__main__":
 
         # check if stations are outside of any timewindows and remove (for all) if so
         # TODO: make smarter gf_spectra selection to have timewindow-specific stations
-        logging.info(f"Checking for missing data in timewindows...")
+        logging.info(f"Checking for missing data in timewindows. Mode: {settings['data_gap_mode']}")
         removed_traces_all_windows = np.array([])
+        skipped_start_times = []
         n_stations_before_trim = len(st)
+
         for start_time in tqdm(
             start_times, desc="checking time windows for missing data"
         ):
@@ -118,25 +120,34 @@ if __name__ == "__main__":
             )
             n_stations_after_trim = len(st_curr)
             if n_stations_after_trim < n_stations_before_trim:
-                stations_in_st_curr = [tr.stats.station for tr in st_curr]
-                removed_traces = [
-                    tr.stats.station
-                    for tr in st
-                    if tr.stats.station not in stations_in_st_curr
-                ]
-                removed_traces_all_windows = np.append(
-                    removed_traces_all_windows, removed_traces
-                )
-        unique_removed_station_names = np.unique(removed_traces_all_windows)
-        logging.warning(
-            f"Removing following stations ({len(unique_removed_station_names)}/{len(st)}): {unique_removed_station_names}"
-        )
-        st_tmp = obspy.Stream()
-        for tr in st:
-            if tr.stats.station in unique_removed_station_names:
-                continue
-            st_tmp += tr
-        st = st_tmp
+                if settings["data_gap_mode"] == "skip_stations":
+                    stations_in_st_curr = [tr.stats.station for tr in st_curr]
+                    removed_traces = [
+                        tr.stats.station
+                        for tr in st
+                        if tr.stats.station not in stations_in_st_curr
+                    ]
+                    removed_traces_all_windows = np.append(
+                        removed_traces_all_windows, removed_traces
+                    )
+                elif settings["data_gap_mode"] == "skip_time":
+                    skipped_start_times.append(start_time)
+
+        if settings["data_gap_mode"] == "skip_stations":
+            unique_removed_station_names = np.unique(removed_traces_all_windows)
+            logging.warning(
+                f"Removing following stations ({len(unique_removed_station_names)}/{len(st)}): {unique_removed_station_names}"
+            )
+            st_tmp = obspy.Stream()
+            for tr in st:
+                if tr.stats.station in unique_removed_station_names:
+                    continue
+                st_tmp += tr
+            st = st_tmp
+        elif settings["data_gap_mode"] == "skip_time":
+            logging.warning(
+                f"Removing following time windows ({len(skipped_start_times)}/{len(start_times)}): {skipped_start_times}"
+            )
 
     # -- REPLOT?
     # If results already exist, only replot results.
@@ -144,6 +155,11 @@ if __name__ == "__main__":
     settings_generator = settings_gen(start_times, settings)
     for start_time, fp, wavetype, n_svd, noise_idx, sdr in settings_generator:
         if isinstance(start_time, list):
+            continue
+        if (
+            settings["data_gap_mode"] == "skip_time"
+            and start_time in skipped_start_times
+        ):
             continue
         filename = f"{project_dir}/out/out_{start_time.timestamp}_{settings['window_length']}_{fp}_{n_svd}_{noise_idx}_{sdr}.npy"
         if os.path.isfile(f"{filename}"):
@@ -234,6 +250,12 @@ if __name__ == "__main__":
         desc="current job",
         total=len(list(settings_gen(start_times, settings))),
     ):
+        if (
+            settings["data_gap_mode"] == "skip_time"
+            and start_time in skipped_start_times
+        ):
+            continue
+
         logging.info(
             f"Starting: {start_time} - {fp}Hz - {wavetype} - {n_svd} eigenvectors - {noise_idx} noise iteration - {sdr}"
         )
