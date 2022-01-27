@@ -10,12 +10,13 @@ This repository acts as the development platform for this approach.
 
 A manuscript describing the method in detail is available as a pre-print at EarthArXiv [doi.org/10.31223/X5492H](https://doi.org/10.31223/X5492H) and submitted to Geophysical Journal International for peer review. A separate repository contains the information (what data was used, settings files, figure scripts) to reproduce the results we present in our manuscript: [seismology-hamburg/schippkus_hadziioannou_2022](https://github.com/seismology-hamburg/schippkus_hadziioannou_2022).
 
-## TODO
+## Instructions
 
-- [ ] A smarter way of optimizing the grid/processing needs than manually-selected rounding
-- [ ] Move multiprocessing logic to separate function & enable single-core runs
-- [ ] Beampower computation based on acoular
-### Requirements
+* Install requirements
+* Download or clone the repository
+* Configure `settings.yml` in `./code/`
+* `python logic.py` in `./code/`
+## Requirements
 
 - python 3.8+
 - [obspy](https://github.com/obspy/obspy/wiki/) to read seismic data
