@@ -171,7 +171,7 @@ def plot_beampowers_on_map(
             vmin=vmin,
             vmax=vmax,
             transform=trans,
-            cmap=cm.batlow,
+            cmap=cm.vik_r,
         )
     else:
         # force symmetric colorscale
@@ -189,7 +189,7 @@ def plot_beampowers_on_map(
             edgecolors="face",
             vmin=vmin,
             vmax=vmax,
-            cmap=cm.batlow,
+            cmap=cm.vik_r,
             shading="nearest",
             # norm=LogNorm(),
         )
