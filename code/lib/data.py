@@ -13,23 +13,22 @@ def get_data_spectra(st, start_time, settings, fp, freqs_of_interest_idx):
     logging.info(st_curr)
 
     data_spectra = []
+    expected_data_length = settings["window_length"] * settings["sampling_rate"]
     for tr in st_curr:
         data = tr.data.copy()
         # ensure that data is right length
-        if len(data) < settings["window_length"]:
+        if len(data) < expected_data_length:
             logging.info(
-                f"Data too short ({len(data)})for {tr.stats.station}. Filling with {settings['window_length'] - len(data)} 0s"
+                f"Data too short ({len(data)})for {tr.stats.station}. Filling with {expected_data_length - len(data)} 0s"
             )
             # fill with needed zeros
-            data = np.append(
-                data, np.array([0] * (settings["window_length"] - len(data)))
-            )
+            data = np.append(data, np.array([0] * (expected_data_length - len(data))),)
 
-        if len(data) > settings["window_length"]:
+        if len(data) > expected_data_length:
             logging.debug(
-                f"Data too long ({len(data)})for {tr.stats.station}. Removing {len(data) - settings['window_length']}last samples"
+                f"Data too long ({len(data)})for {tr.stats.station}. Removing {len(data) - expected_data_length}last samples"
             )
-            data = data[: settings["window_length"]]
+            data = data[: int(expected_data_length)]
 
         tr_spectrum = fft(data)
 
