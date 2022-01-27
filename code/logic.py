@@ -105,7 +105,9 @@ if __name__ == "__main__":
 
         # check if stations are outside of any timewindows and remove (for all) if so
         # TODO: make smarter gf_spectra selection to have timewindow-specific stations
-        logging.info(f"Checking for missing data in timewindows. Mode: {settings['data_gap_mode']}")
+        logging.info(
+            f"Checking for missing data in timewindows. Mode: {settings['data_gap_mode']}"
+        )
         removed_traces_all_windows = np.array([])
         skipped_start_times = []
         n_stations_before_trim = len(st)
@@ -276,7 +278,7 @@ if __name__ == "__main__":
             )
 
         # increase computational speed by excluding frequencies outside of specified band
-        if isinstance(fp, list):
+        if isinstance(fp, list) or isinstance(fp, tuple):
             freqs_of_interest_idx = (freqs >= fp[0]) & (freqs <= fp[1])
             # handle if band is too narrow and excludes all frequencies
             if len(freqs_of_interest_idx) == 0:
@@ -287,7 +289,7 @@ if __name__ == "__main__":
                 freqs_of_interest_idx = np.argmin(np.abs(freqs - np.mean(fp)))
             # limit gf spectra to frequencies of interest
             gf_spectra = gf_spectra_all[:, freqs_of_interest_idx]
-        else:
+        elif fp is None:
             freqs_of_interest_idx = None
             gf_spectra = gf_spectra_all
         logging.debug(f"Relevant freq: {freqs[freqs_of_interest_idx]=}")

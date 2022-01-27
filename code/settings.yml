@@ -177,6 +177,15 @@ v_const: 3.0
 
 # 8 -- FREQUENCIES
 
+# Frequency band definition mode:
+# Options:
+# - "global": Give a list of frequency bands below 
+#   that is used for all timewindows (default)
+# - "timelist": frequency band extracted from external timelist
+#   only available, if time_window_mode is "file" and 
+#   the .csv contains an fmin,fmax column for each time
+freq_band_mode: "global"
+
 # A list of all frequencyt pairs to analyse.
 # Options:
 # - "None": Full spectra are used. May need to be careful w/ frequency content of signals.

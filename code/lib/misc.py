@@ -23,41 +23,89 @@ def settings_gen(start_times, settings):
     """
     from itertools import product
 
+    from numpy import argmin, array
+    from obspy import UTCDateTime
+    from pandas import read_csv
+
+    if settings["freq_band_mode"] == "timelist":
+        timelist_df = read_csv(settings["external_timelist"])
+        _times = timelist_df["time"].values
+        fmin_per_starttime, fmax_per_starttime = (
+            timelist_df["fmin"].values,
+            timelist_df["fmax"].values,
+        )
+        _times = array([UTCDateTime(_) for _ in _times])
+
     # for start_time in start_times:
     #     for fp in settings["filterpairs"]:
     #         for wavetype in settings["wavetypes"]:
-    for start_time, fp, wavetype in product(
-        start_times, settings["frequency_bands"], settings["wavetypes"]
-    ):
-        if settings["do_svd"]:
-            for n_svd in settings["n_svd_components"]:
+    for start_time, wavetype in product(start_times, settings["wavetypes"]):
+        if settings["freq_band_mode"] == "timelist":
+            fp = (
+                fmin_per_starttime[argmin(abs(_times - start_time))],
+                fmax_per_starttime[argmin(abs(_times - start_time))],
+            )
+            if settings["do_svd"]:
+                for n_svd in settings["n_svd_components"]:
+                    if settings["add_noise_to_synth"] > 0:
+                        for noise_idx in range(settings["add_noise_iterations"]):
+                            if settings["strike_dip_rake_gridsearch"]:
+                                for sdr in sdr_grid_gen(settings):
+                                    yield start_time, fp, wavetype, n_svd, noise_idx, sdr
+                            else:
+                                yield start_time, fp, wavetype, n_svd, noise_idx, False
+                    else:
+                        if settings["strike_dip_rake_gridsearch"]:
+                            for sdr in sdr_grid_gen(settings):
+                                yield start_time, fp, wavetype, n_svd, 0, sdr
+                        else:
+                            yield start_time, fp, wavetype, n_svd, 0, False
+            else:
                 if settings["add_noise_to_synth"] > 0:
                     for noise_idx in range(settings["add_noise_iterations"]):
                         if settings["strike_dip_rake_gridsearch"]:
                             for sdr in sdr_grid_gen(settings):
-                                yield start_time, fp, wavetype, n_svd, noise_idx, sdr
+                                yield start_time, fp, wavetype, 0, noise_idx, sdr
                         else:
-                            yield start_time, fp, wavetype, n_svd, noise_idx, False
+                            yield start_time, fp, wavetype, 0, noise_idx, False
                 else:
                     if settings["strike_dip_rake_gridsearch"]:
                         for sdr in sdr_grid_gen(settings):
-                            yield start_time, fp, wavetype, n_svd, 0, sdr
+                            yield start_time, fp, wavetype, 0, 0, sdr
                     else:
-                        yield start_time, fp, wavetype, n_svd, 0, False
+                        yield start_time, fp, wavetype, 0, 0, False
+
         else:
-            if settings["add_noise_to_synth"] > 0:
-                for noise_idx in range(settings["add_noise_iterations"]):
-                    if settings["strike_dip_rake_gridsearch"]:
-                        for sdr in sdr_grid_gen(settings):
-                            yield start_time, fp, wavetype, 0, noise_idx, sdr
-                    else:
-                        yield start_time, fp, wavetype, 0, noise_idx, False
-            else:
-                if settings["strike_dip_rake_gridsearch"]:
-                    for sdr in sdr_grid_gen(settings):
-                        yield start_time, fp, wavetype, 0, 0, sdr
+            for fp in settings["frequency_bands"]:
+                if settings["do_svd"]:
+                    for n_svd in settings["n_svd_components"]:
+                        if settings["add_noise_to_synth"] > 0:
+                            for noise_idx in range(settings["add_noise_iterations"]):
+                                if settings["strike_dip_rake_gridsearch"]:
+                                    for sdr in sdr_grid_gen(settings):
+                                        yield start_time, fp, wavetype, n_svd, noise_idx, sdr
+                                else:
+                                    yield start_time, fp, wavetype, n_svd, noise_idx, False
+                        else:
+                            if settings["strike_dip_rake_gridsearch"]:
+                                for sdr in sdr_grid_gen(settings):
+                                    yield start_time, fp, wavetype, n_svd, 0, sdr
+                            else:
+                                yield start_time, fp, wavetype, n_svd, 0, False
                 else:
-                    yield start_time, fp, wavetype, 0, 0, False
+                    if settings["add_noise_to_synth"] > 0:
+                        for noise_idx in range(settings["add_noise_iterations"]):
+                            if settings["strike_dip_rake_gridsearch"]:
+                                for sdr in sdr_grid_gen(settings):
+                                    yield start_time, fp, wavetype, 0, noise_idx, sdr
+                            else:
+                                yield start_time, fp, wavetype, 0, noise_idx, False
+                    else:
+                        if settings["strike_dip_rake_gridsearch"]:
+                            for sdr in sdr_grid_gen(settings):
+                                yield start_time, fp, wavetype, 0, 0, sdr
+                        else:
+                            yield start_time, fp, wavetype, 0, 0, False
 
 
 def sdr_grid_gen(settings):
@@ -294,8 +342,20 @@ def check_settings_valid(settings):
 
     # 8 -- FREQUENCIES
 
-    assert all(len(_) == 2 for _ in settings["frequency_bands"])
-    assert all(fp[0] < fp[1] for fp in settings["frequency_bands"])
+    if settings["freq_band_mode"] == "global":
+        assert all(len(_) == 2 for _ in settings["frequency_bands"])
+        assert all(fp[0] < fp[1] for fp in settings["frequency_bands"])
+    elif settings["freq_band_mode"] == "timelist":
+        timelist_df = read_csv(settings["external_timelist"])
+        assert all(
+            fmin < fmax
+            for fmin, fmax in zip(
+                timelist_df["fmin"].values, timelist_df["fmax"].values
+            )
+        )
+
+    else:
+        raise ValueError("Invalid option for 'freq_band_mode'")
 
     # 9 -- SOURCE MECHANISM
 
