@@ -343,8 +343,12 @@ def check_settings_valid(settings):
     # 8 -- FREQUENCIES
 
     if settings["freq_band_mode"] == "global":
-        assert all(len(_) == 2 for _ in settings["frequency_bands"])
-        assert all(fp[0] < fp[1] for fp in settings["frequency_bands"])
+        assert all(
+            True if fp is None else len(fp) == 2 for fp in settings["frequency_bands"]
+        )
+        assert all(
+            True if fp is None else fp[0] < fp[1] for fp in settings["frequency_bands"]
+        )
     elif settings["freq_band_mode"] == "timelist":
         timelist_df = read_csv(settings["external_timelist"])
         assert all(

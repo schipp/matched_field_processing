@@ -188,9 +188,9 @@ freq_band_mode: "global"
 
 # A list of all frequencyt pairs to analyse.
 # Options:
-# - "None": Full spectra are used. May need to be careful w/ frequency content of signals.
+# - null: Full spectra are used. May need to be careful w/ frequency content of signals.
 # - [fmin, fmax]: Spectra are sliced to given frequency band.
-frequency_bands: [[0.05, 0.2], [0.13, 0.15]]
+# frequency_bands: [null, [0.05, 0.2], [0.1, 0.2]]
 
 # 9 -- SOURCE MECHANISM
 

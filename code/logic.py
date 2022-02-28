@@ -173,6 +173,11 @@ if __name__ == "__main__":
                 )
                 beampowers = np.load(f"{filename}", allow_pickle=True)
                 station_locations = get_station_locations(settings, st)
+
+                if fp is None:
+                    plot_identifier = f"{fp}_{wavetype}_{n_svd}_{noise_idx}"
+                else:
+                    plot_identifier = f"{fp[0]}_{fp[1]}_{wavetype}_{n_svd}_{noise_idx}"
                 plot_results(
                     beampowers=beampowers,
                     settings=settings,
@@ -180,7 +185,7 @@ if __name__ == "__main__":
                     grid_lon_coords=grid_lon_coords,
                     grid_lat_coords=grid_lat_coords,
                     station_locations=station_locations,
-                    plot_identifier=f"{fp[0]}_{fp[1]}_{wavetype}_{n_svd}_{noise_idx}",
+                    plot_identifier=plot_identifier,
                 )
         else:
             one_missing = True
@@ -360,6 +365,10 @@ if __name__ == "__main__":
         np.save(filename, beampowers)
 
         if settings["do_plot"]:
+            if fp is None:
+                plot_identifier = f"{fp}_{wavetype}_{n_svd}_{noise_idx}"
+            else:
+                plot_identifier = f"{fp[0]}_{fp[1]}_{wavetype}_{n_svd}_{noise_idx}"
             plot_results(
                 beampowers=beampowers,
                 settings=settings,
@@ -367,6 +376,6 @@ if __name__ == "__main__":
                 grid_lon_coords=grid_lon_coords,
                 grid_lat_coords=grid_lat_coords,
                 station_locations=station_locations,
-                plot_identifier=f"{fp[0]}_{fp[1]}_{wavetype}_{n_svd}_{noise_idx}",
+                plot_identifier=plot_identifier,
             )
 
